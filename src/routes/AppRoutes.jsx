@@ -10,7 +10,7 @@ function AppRoutes() {
 
       <Route element={<MainLayout />}>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/report" element={<RegisterComplaint />} />
+        <Route path="/registercomplaint" element={<RegisterComplaint />} />
       </Route>
 
     </Routes>

@@ -1,4 +1,4 @@
-export default function NoticesAndLinks() {
+export default function HowItWorks() {
   const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 

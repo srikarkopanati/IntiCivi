@@ -29,13 +29,13 @@ function Navbar() {
             </li>
 
             <li className="nav-item">
-              <Link className="nav-link">
+              <Link className="nav-link" to="/registercomplaint">
                 Report Issue
               </Link>
             </li>
 
             <li className="nav-item">
-              <Link className="nav-link">
+              <Link className="nav-link" to="/trackissue">
                 Track Complaint
               </Link>
             </li>

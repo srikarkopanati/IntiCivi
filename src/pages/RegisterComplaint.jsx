@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -296,6 +297,7 @@ const styles = `
   }
 `;
 
+
 const CATEGORIES = [
   { label: "Road & Footpath", icon: "🛣️", value: "Road" },
   { label: "Water Supply",    icon: "💧", value: "Water" },
@@ -310,7 +312,7 @@ const CATEGORIES = [
 const REF = `CMP-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
 
 // ── Toggle this to simulate logged-in vs guest ──────────────────────────────
-const MOCK_USER = { name: "Rajesh Kumar", phone: "+91 98765 43210", email: "rajesh@example.com" };
+const MOCK_USER = { name: "Login to submit", phone: "", email: "" };
 // Set to `null` to see the guest / not-logged-in flow
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -369,7 +371,7 @@ export default function RegisterComplaint() {
 
         {/* Breadcrumb */}
         <div className="breadcrumb">
-          <span>Home</span><span className="sep">›</span>
+          <Link to="/">Home</Link><span className="sep">›</span>
           <span className="current">Register Complaint</span>
         </div>
 
