@@ -20,7 +20,7 @@ export default function Login() {
     // user login (any user allowed for now)
     if (username && password) {
       login(username);
-      navigate("/report");
+      navigate("/registercomplaint");
       return;
     }
 

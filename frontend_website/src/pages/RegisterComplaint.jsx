@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { isLoggedIn, login } from "../utils/auth";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -317,7 +318,9 @@ const MOCK_USER = { name: "Login to submit", phone: "", email: "" };
 // ────────────────────────────────────────────────────────────────────────────
 
 export default function RegisterComplaint() {
-  const [loggedInUser] = useState(MOCK_USER); // swap for null to test guest flow
+  const navigate = useNavigate();
+
+  const [loggedInUser] = useState(null); // set to MOCK_USER to test guest flow
 
   const [form, setForm] = useState({
     category: "", description: "", priority: "", contact_time: "",
@@ -328,6 +331,9 @@ export default function RegisterComplaint() {
 
   const [locationStatus, setLocationStatus] = useState(null); // null | fetching | success | error
   const [submitted, setSubmitted] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginUsername, setLoginUsername] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const handleChange = (e) => {
@@ -362,7 +368,34 @@ export default function RegisterComplaint() {
     );
   };
 
-  const handleSubmit = (e) => { e.preventDefault(); setSubmitted(true); };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    setSubmitted(true);
+  };
+
+  const handleLogin = () => {
+    // admin login
+    if (loginUsername === "admin" && loginPassword === "admin") {
+      login("admin");
+      setShowLoginModal(false);
+      setSubmitted(true);
+      return;
+    }
+
+    // user login (any user allowed for now)
+    if (loginUsername && loginPassword) {
+      login(loginUsername);
+      setShowLoginModal(false);
+      setSubmitted(true);
+      return;
+    }
+
+    alert("Invalid login");
+  };
 
   return (
     <>
@@ -651,6 +684,31 @@ export default function RegisterComplaint() {
           </div>
         </div>
       </div>
+
+      {showLoginModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', padding: '20px', borderRadius: '8px', width: '300px' }} onClick={e => e.stopPropagation()}>
+            <h3>Login Required</h3>
+            <p>Please login to submit your complaint.</p>
+            <input
+              type="text"
+              placeholder="Username"
+              value={loginUsername}
+              onChange={(e) => setLoginUsername(e.target.value)}
+              style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
+            />
+            <button onClick={handleLogin} style={{ width: '100%', padding: '10px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px' }}>Login</button>
+            <button onClick={() => setShowLoginModal(false)} style={{ width: '100%', padding: '10px', marginTop: '10px', background: '#6c757d', color: 'white', border: 'none', borderRadius: '4px' }}>Cancel</button>
+          </div>
+        </div>
+      )}
 
       {submitted && (
         <div className="success-overlay" onClick={() => setSubmitted(false)}>
