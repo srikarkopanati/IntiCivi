@@ -98,7 +98,30 @@ User:
 sa
 Password:
 (empty)
+ 
+6.3 Android App
+    Open Project in Android Studio
+    Open Android Studio
+    Click "Open"
 
+    Select the folder:
+    IntiCivi/InticiviApp
+
+    ⁠Sync Gradle
+    Wait for Gradle to sync automatically
+    If not, click "Sync Project with Gradle Files"
+
+    Setup Emulator or Device
+    Open Device Manager in Android Studio
+    Create or start an emulator
+    OR
+    Connect a real Android device via USB
+    Enable Developer Options → USB Debugging
+
+    ⁠Run the Application
+    Click the Run button
+    Select your emulator or device
+    The app will install and launch automatically
 
 7. API Endpoints
 
