@@ -164,7 +164,22 @@ public class HomeFragment extends Fragment {
                     .commit();
         });
 
+        //Stat
+        View totalCard = homeView.findViewById(R.id.card_total);
+        ((TextView) totalCard.findViewById(R.id.value)).setText("12,034");
+        ((TextView) totalCard.findViewById(R.id.title)).setText("Total Complaints");
 
+        View resolvedCard = homeView.findViewById(R.id.card_resolved);
+        ((TextView) resolvedCard.findViewById(R.id.value)).setText("10,200");
+        ((TextView) resolvedCard.findViewById(R.id.title)).setText("Resolved");
+
+        View pendingCard = homeView.findViewById(R.id.card_pending);
+        ((TextView) pendingCard.findViewById(R.id.value)).setText("834");
+        ((TextView) pendingCard.findViewById(R.id.title)).setText("Pending");
+
+        View deptCard = homeView.findViewById(R.id.card_department);
+        ((TextView) deptCard.findViewById(R.id.value)).setText("25");
+        ((TextView) deptCard.findViewById(R.id.title)).setText("Departments");
 
         report.setOnClickListener(v -> Toast.makeText(getContext(), "Report Clicked", Toast.LENGTH_SHORT).show());
 
