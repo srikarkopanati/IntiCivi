@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="0dp"
+    android:layout_height="140dp"
+    android:layout_columnWeight="1"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/card_top_blue"
+    android:elevation="3dp">
+
+    <!-- Icon -->
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_stat"
+        android:background="#E3F2FD"
+        android:padding="8dp"/>
+
+    <!-- Number -->
+    <TextView
+        android:id="@+id/value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12,034"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Label -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Complaints"
+        android:textSize="12sp"
+        android:textColor="#666"/>
+
+    <!-- Footer -->
+    <TextView
+        android:text="Updated today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:textColor="#3F51B5"
+        android:layout_marginTop="6dp"/>
+
+</LinearLayout>
