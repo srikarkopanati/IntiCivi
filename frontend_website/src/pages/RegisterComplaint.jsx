@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { isLoggedIn, login, getUser } from "../utils/auth";
+import LoginModal from "../components/LoginModal";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -41,8 +43,8 @@ const styles = `
     display: flex; align-items: center; gap: 6px;
     font-size: 12px; color: var(--gray-500);
   }
-  .breadcrumb span { cursor: pointer; }
-  .breadcrumb span:hover { color: var(--navy); text-decoration: underline; }
+  .breadcrumb a { color: var(--gray-500); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--navy); text-decoration: underline; }
   .breadcrumb .sep { color: var(--gray-300); }
   .breadcrumb .current { color: var(--navy); font-weight: 500; }
 
@@ -174,7 +176,6 @@ const styles = `
   .priority-btn.p-high.sel  { background: #fce4ec; border-color: #c62828; color: #b71c1c; }
   .priority-label { font-size: 10px; font-weight: 400; display: block; margin-top: 2px; color: inherit; opacity: 0.75; }
 
-  /* Location */
   .use-location-btn {
     display: flex; align-items: center; gap: 6px;
     background: var(--gray-50); border: 1.5px solid var(--border); border-radius: 4px;
@@ -193,7 +194,7 @@ const styles = `
   .location-status.success  { background: #e8f5e9; color: #1a6b3c; }
   .location-status.error    { background: #fce4ec; color: #b71c1c; }
 
-  /* Login banner */
+  /* Login banner inside form */
   .login-banner {
     background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 100%);
     border: 1.5px solid #c5d6f8; border-radius: 5px;
@@ -212,7 +213,7 @@ const styles = `
   }
   .btn-login-inline:hover { background: var(--navy-mid); }
 
-  /* Logged-in user chip */
+  /* User chip */
   .user-chip {
     display: inline-flex; align-items: center; gap: 8px;
     background: var(--navy); color: white;
@@ -226,7 +227,6 @@ const styles = `
     display: flex; align-items: center; justify-content: center;
   }
 
-  /* Guest section bg */
   .guest-section {
     padding: 28px 32px;
     border-bottom: 1px solid var(--gray-100);
@@ -297,7 +297,6 @@ const styles = `
   }
 `;
 
-
 const CATEGORIES = [
   { label: "Road & Footpath", icon: "🛣️", value: "Road" },
   { label: "Water Supply",    icon: "💧", value: "Water" },
@@ -311,23 +310,33 @@ const CATEGORIES = [
 
 const REF = `CMP-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
 
-// ── Toggle this to simulate logged-in vs guest ──────────────────────────────
-const MOCK_USER = { name: "Login to submit", phone: "", email: "" };
-// Set to `null` to see the guest / not-logged-in flow
-// ────────────────────────────────────────────────────────────────────────────
-
 export default function RegisterComplaint() {
-  const [loggedInUser] = useState(MOCK_USER); // swap for null to test guest flow
+  const navigate = useNavigate();
+
+  // ── Auth state — re-reads on every render after login ──────────────────────
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn());
+  const [username, setUsername] = useState(getUser?.() || "");
+
+  // Re-sync when Navbar logs in (same-tab custom event)
+  useEffect(() => {
+    const sync = () => {
+      setLoggedIn(isLoggedIn());
+      setUsername(getUser?.() || "");
+    };
+    window.addEventListener("authChange", sync);
+    return () => window.removeEventListener("authChange", sync);
+  }, []);
 
   const [form, setForm] = useState({
     category: "", description: "", priority: "", contact_time: "",
     state: "", city: "", pincode: "", address: "",
     image: null,
-    name: "", phone: "", email: "", // guest fields
+    name: "", phone: "", email: "",
   });
 
-  const [locationStatus, setLocationStatus] = useState(null); // null | fetching | success | error
+  const [locationStatus, setLocationStatus] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const handleChange = (e) => {
@@ -362,7 +371,24 @@ export default function RegisterComplaint() {
     );
   };
 
-  const handleSubmit = (e) => { e.preventDefault(); setSubmitted(true); };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // If not logged in, show the login modal instead of submitting
+    if (!isLoggedIn()) {
+      setShowLoginModal(true);
+      return;
+    }
+    setSubmitted(true);
+  };
+
+  // Called by LoginModal after a successful login
+  const handleLoginSuccess = (user) => {
+    setLoggedIn(true);
+    setUsername(user);
+    setShowLoginModal(false);
+    // Auto-submit now that the user is logged in
+    setSubmitted(true);
+  };
 
   return (
     <>
@@ -371,7 +397,8 @@ export default function RegisterComplaint() {
 
         {/* Breadcrumb */}
         <div className="breadcrumb">
-          <Link to="/">Home</Link><span className="sep">›</span>
+          <Link to="/">Home</Link>
+          <span className="sep">›</span>
           <span className="current">Register Complaint</span>
         </div>
 
@@ -505,18 +532,16 @@ export default function RegisterComplaint() {
               </div>
 
               {/* ── 3. CITIZEN / GUEST DETAILS ── */}
-              {loggedInUser ? (
+              {loggedIn ? (
                 // ── Logged in: show user chip ──
                 <div className="form-section" style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:10}}>
                   <div>
                     <div className="field-label" style={{marginBottom:8}}>Submitting as</div>
                     <div className="user-chip">
                       <div className="user-avatar">
-                        {loggedInUser.name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase()}
+                        {username.slice(0, 2).toUpperCase()}
                       </div>
-                      <span>{loggedInUser.name}</span>
-                      <span style={{opacity:0.5}}>·</span>
-                      <span style={{opacity:0.75}}>{loggedInUser.phone}</span>
+                      <span>{username}</span>
                     </div>
                   </div>
                   <span style={{fontSize:12,color:"var(--gray-500)"}}>
@@ -524,7 +549,7 @@ export default function RegisterComplaint() {
                   </span>
                 </div>
               ) : (
-                // ── Guest: show login nudge + fields + guest chip at bottom ──
+                // ── Guest: show login nudge + guest fields ──
                 <div className="guest-section">
                   <div className="section-header">
                     <div className="section-num">3</div>
@@ -538,7 +563,13 @@ export default function RegisterComplaint() {
                       <strong>Already have an account?</strong>
                       <span>Login to auto-fill your details and track complaints easily.</span>
                     </div>
-                    <button type="button" className="btn-login-inline">Login / Register</button>
+                    <button
+                      type="button"
+                      className="btn-login-inline"
+                      onClick={() => setShowLoginModal(true)}
+                    >
+                      Login / Register
+                    </button>
                   </div>
 
                   <div className="field-row three">
@@ -558,34 +589,18 @@ export default function RegisterComplaint() {
                     </div>
                   </div>
 
-                  {/* Guest chip — shown once name/phone are filled */}
-                  {(form.name || form.phone) && (
-                    <div style={{marginTop:18, display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:10}}>
-                      <div>
-                        <div className="field-label" style={{marginBottom:8}}>Submitting as</div>
-                        <div className="user-chip">
-                          <div className="user-avatar" style={{background:"var(--gray-300)", color:"var(--navy)"}}>
-                            {form.name ? form.name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase() : "?"}
-                          </div>
-                          <span>{form.name || "Guest"}</span>
-                          {form.phone && <><span style={{opacity:0.5}}>·</span><span style={{opacity:0.75}}>{form.phone}</span></>}
-                          <span style={{fontSize:10, opacity:0.55, background:"rgba(255,255,255,0.15)", padding:"2px 7px", borderRadius:10}}>Guest</span>
-                        </div>
+                  {/* Guest chip */}
+                  <div style={{marginTop:18, display:"flex", alignItems:"center", gap:10}}>
+                    <div className="field-label">Submitting as</div>
+                    <div className="user-chip" style={{opacity: form.name || form.phone ? 1 : 0.6}}>
+                      <div className="user-avatar" style={{background:"var(--gray-300)", color:"var(--navy)"}}>
+                        {form.name ? form.name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase() : "?"}
                       </div>
+                      <span>{form.name || "Guest User"}</span>
+                      {form.phone && <><span style={{opacity:0.5}}>·</span><span style={{opacity:0.75}}>{form.phone}</span></>}
+                      <span style={{fontSize:10, opacity:0.55, background:"rgba(255,255,255,0.15)", padding:"2px 7px", borderRadius:10}}>Guest</span>
                     </div>
-                  )}
-
-                  {/* Static guest chip when nothing filled yet */}
-                  {(!form.name && !form.phone) && (
-                    <div style={{marginTop:18, display:"flex", alignItems:"center", gap:10}}>
-                      <div className="field-label">Submitting as</div>
-                      <div className="user-chip" style={{opacity:0.6}}>
-                        <div className="user-avatar" style={{background:"var(--gray-300)", color:"var(--navy)"}}>?</div>
-                        <span>Guest User</span>
-                        <span style={{fontSize:10, opacity:0.55, background:"rgba(255,255,255,0.15)", padding:"2px 7px", borderRadius:10}}>Not logged in</span>
-                      </div>
-                    </div>
-                  )}
+                  </div>
                 </div>
               )}
 
@@ -601,7 +616,7 @@ export default function RegisterComplaint() {
             </div>
           </form>
 
-          {/* Sidebar */}
+          {/* ── Sidebar ── */}
           <div className="sidebar">
             <div className="sidebar-card">
               <div className="sidebar-card-head">📞 Helpline Numbers</div>
@@ -652,6 +667,15 @@ export default function RegisterComplaint() {
         </div>
       </div>
 
+      {/* ── Login Modal ── */}
+      {showLoginModal && (
+        <LoginModal
+          onClose={() => setShowLoginModal(false)}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      )}
+
+      {/* ── Success overlay ── */}
       {submitted && (
         <div className="success-overlay" onClick={() => setSubmitted(false)}>
           <div className="success-modal" onClick={e => e.stopPropagation()}>
