@@ -146,11 +146,11 @@ export default function HowItWorks() {
 `;
 
   const notices = [
-    { day: "18", mon: "MAR", title: "System maintenance scheduled from 2:00 AM to 4:00 AM on March 22, 2026", dept: "IT Dept", tag: "imp", tagLabel: "Important" },
-    { day: "15", mon: "MAR", title: "New category added: Urban Flooding & Drainage complaints now accepted", dept: "PWD", tag: "new", tagLabel: "New" },
-    { day: "10", mon: "MAR", title: "Complaint resolution SLA updated — critical issues now resolved within 48 hours", dept: "Admin", tag: "upd", tagLabel: "Updated" },
-    { day: "05", mon: "MAR", title: "Municipal ward boundary re-mapping effective April 1, 2026 — update your ward details", dept: "Revenue Dept", tag: "imp", tagLabel: "Important" },
-    { day: "01", mon: "MAR", title: "Mobile app v2.4 released — improved photo upload and GPS tagging for complaints", dept: "IT Dept", tag: "new", tagLabel: "New" },
+    { day: "18", mon: "JUN", title: "System maintenance scheduled from 2:00 AM to 4:00 AM on March 22, 2026", dept: "IT Dept", tag: "imp", tagLabel: "Important" },
+    { day: "15", mon: "JUN", title: "New category added: Urban Flooding & Drainage complaints now accepted", dept: "PWD", tag: "new", tagLabel: "New" },
+    { day: "10", mon: "JUN", title: "Complaint resolution SLA updated — critical issues now resolved within 48 hours", dept: "Admin", tag: "upd", tagLabel: "Updated" },
+    { day: "05", mon: "JUN", title: "Municipal ward boundary re-mapping effective April 1, 2026 — update your ward details", dept: "Revenue Dept", tag: "imp", tagLabel: "Important" },
+    { day: "01", mon: "JUN", title: "Mobile app v2.4 released — improved photo upload and GPS tagging for complaints", dept: "IT Dept", tag: "new", tagLabel: "New" },
   ];
 
   const downloads = [
