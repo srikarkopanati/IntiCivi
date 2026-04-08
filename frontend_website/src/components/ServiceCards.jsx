@@ -4,8 +4,8 @@ export default function ServiceCards() {
   const cards = [
     { icon: "📋", title: "Register Complaint", desc: "Report a civic issue in your area", path: "/registercomplaint", accent: "#FF9900", bg: "#fef5e8" },
     { icon: "🔍", title: "Track Complaint", desc: "Check real-time complaint status", path: "/trackissue", accent: "#138808", bg: "#e8f8ee" },
-    { icon: "📁", title: "My Complaints", desc: "View your submitted issues", path: "/mycomplaints", accent: "#a855f7", bg: "#f5e8ff" },
-    { icon: "🤝", title: "Help / Support", desc: "Contact the concerned authority", path: "/support", accent: "#ef4444", bg: "#fff0f0" },
+    { icon: "📁", title: "My Complaints", desc: "View your submitted issues", path: "/trackissue", accent: "#a855f7", bg: "#f5e8ff" },
+    { icon: "🤝", title: "Help / Support", desc: "Contact the concerned authority", path: "https://consumerhelpline.gov.in/public/", accent: "#ef4444", bg: "#fff0f0" },
   ];
 
   return (

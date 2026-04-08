@@ -174,13 +174,14 @@ function Footer() {
             </div>
 
             {/* Resources */}
+
             <div>
               <p className="ft-col-title">Resources</p>
               <div className="ft-links">
-                <button className="ft-link">Help & Support</button>
-                <button className="ft-link">FAQs</button>
-                <button className="ft-link">Privacy Policy</button>
-                <button className="ft-link">Terms of Use</button>
+                <Link to="https://consumerhelpline.gov.in/public/" className="ft-link">Help & Support</Link>
+                <Link to="https://pgportal.gov.in/Home/Faq" className="ft-link">FAQs</Link>
+                <Link to="https://www.digitalindia.gov.in/privacy-policy/" className="ft-link">Privacy Policy</Link>
+                <Link to="https://consumerhelpline.gov.in/public/" className="ft-link">Terms of Use</Link>
               </div>
             </div>
 
