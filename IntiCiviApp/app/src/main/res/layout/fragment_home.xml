@@ -230,19 +230,22 @@
         <include layout="@layout/item_service_track_complaint"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_columnWeight="1"/>
+            android:layout_columnWeight="1"
+            android:id="@+id/track_complaint"/>
 
         <!-- Card 3 -->
         <include layout="@layout/item_service_my_complain"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_columnWeight="1"/>
+            android:layout_columnWeight="1"
+            android:id="@+id/my_complain"/>
 
         <!-- Card 4 -->
         <include layout="@layout/item_service_help"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_columnWeight="1"/>
+            android:layout_columnWeight="1"
+            android:id="@+id/help_support"/>
 
     </GridLayout>
 

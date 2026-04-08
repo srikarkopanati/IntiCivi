@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import com.example.inticiviapp.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -43,18 +45,32 @@ public class ReportFragment extends Fragment {
 
     // UI fields
     MaterialAutoCompleteTextView dropdownState;
-    TextInputEditText etCity, etPin, etAddress;
+    TextInputEditText etCity, etPin, etAddress, etDescription;
     private static final int PICK_MEDIA = 101;
 
     MaterialButton btnUpload;
     LinearLayout layoutFileAck;
     TextView tvFileName;
+    ChipGroup chipGroup;
+    Button btnSubmit;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         ReportView = inflater.inflate(R.layout.fragment_report, container, false);
+        // ================= INPUT FIELDS =================
+        chipGroup = ReportView.findViewById(R.id.chipGroup);
+        etDescription = ReportView.findViewById(R.id.etDescription);
+        etCity = ReportView.findViewById(R.id.etCity);
+        etPin = ReportView.findViewById(R.id.etPin);
+        etAddress = ReportView.findViewById(R.id.etAddress);
+        dropdownState = ReportView.findViewById(R.id.dropdownState);
+        layoutFileAck = ReportView.findViewById(R.id.layoutFileAck);
+        btnSubmit = ReportView.findViewById(R.id.btnSubmit);
+        btnUpload = ReportView.findViewById(R.id.btnUpload);
+
 
         // ================= TIME DROPDOWN =================
         MaterialAutoCompleteTextView dropdownTime = ReportView.findViewById(R.id.dropdownTime);
@@ -96,12 +112,6 @@ public class ReportFragment extends Fragment {
         dropdownState.setAdapter(stateAdapter);
 
 
-        // ================= INPUT FIELDS =================
-        etCity = ReportView.findViewById(R.id.etCity);
-        etPin = ReportView.findViewById(R.id.etPin);
-        etAddress = ReportView.findViewById(R.id.etAddress);
-
-
         // ================= LOCATION =================
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
 
@@ -110,15 +120,76 @@ public class ReportFragment extends Fragment {
         btnLocation.setOnClickListener(v -> getCurrentLocation());
 
         //=======================for upload evidence===================================
-        btnUpload = ReportView.findViewById(R.id.btnUpload);
-        layoutFileAck = ReportView.findViewById(R.id.layoutFileAck);
         tvFileName = ReportView.findViewById(R.id.tvFileName);
 
         // Button click
         btnUpload.setOnClickListener(v -> openMediaPicker());
 
+        //============================Submition button Validation=======================
+        btnSubmit.setOnClickListener(v -> validateForm());
 
         return ReportView;
+    }
+
+    private void validateForm() {
+
+        // CATEGORY
+        if (chipGroup.getCheckedChipId() == View.NO_ID) {
+            Toast.makeText(getContext(), "Please select a category", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // DESCRIPTION
+        String description = etDescription.getText().toString().trim();
+        if (description.isEmpty()) {
+            Toast.makeText(getContext(), "Fill all required", Toast.LENGTH_SHORT).show();
+            etDescription.setError("Description is required");
+            return;
+        }
+
+        // FILE UPLOAD (check visibility of acknowledgement)
+        if (layoutFileAck.getVisibility() != View.VISIBLE) {
+            Toast.makeText(getContext(), "Please upload evidence", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // STATE
+        String state = dropdownState.getText().toString().trim();
+        if (state.isEmpty()) {
+            Toast.makeText(getContext(), "Fill all required", Toast.LENGTH_SHORT).show();
+            dropdownState.setError("Select state");
+            return;
+        }
+
+        // CITY
+        String city = etCity.getText().toString().trim();
+        if (city.isEmpty()) {
+            Toast.makeText(getContext(), "Fill all required", Toast.LENGTH_SHORT).show();
+            etCity.setError("City required");
+            return;
+        }
+
+        // PIN
+        String pin = etPin.getText().toString().trim();
+        if (pin.length() != 6) {
+            Toast.makeText(getContext(), "Fill all required", Toast.LENGTH_SHORT).show();
+            etPin.setError("Enter valid 6-digit PIN");
+            return;
+        }
+
+        // ADDRESS
+        String address = etAddress.getText().toString().trim();
+        if (address.isEmpty()) {
+            Toast.makeText(getContext(), "Fill all required", Toast.LENGTH_SHORT).show();
+            etAddress.setError("Address required");
+            return;
+        }
+
+        // ALL VALID
+        Toast.makeText(getContext(), "Form Submitted Successfully ✅", Toast.LENGTH_LONG).show();
+
+        // 👉 You can send data to backend here
+
     }
 
     private void openMediaPicker() {
@@ -195,6 +266,7 @@ public class ReportFragment extends Fragment {
             getCurrentLocation();
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
