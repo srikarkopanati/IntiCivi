@@ -180,7 +180,7 @@ function Navbar() {
       <nav className="nav-root">
         <div className="nav-inner">
 
-          <NavLink className="nav-brand" to="/">IntiCivi</NavLink>
+          <NavLink className="nav-brand" to="/">PrajaVaani</NavLink>
 
           {/* Desktop nav links */}
           <ul className="nav-links">
