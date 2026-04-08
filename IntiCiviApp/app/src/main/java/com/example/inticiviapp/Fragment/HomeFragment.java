@@ -38,7 +38,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    View report;
+    View report,help,trackComplain,my_complain;
 
     private Handler handler;
     LinearLayout dotsLayout;
@@ -53,7 +53,11 @@ public class HomeFragment extends Fragment {
         //slider
         ViewPager2 viewPager = homeView.findViewById(R.id.viewPager);
         report = homeView.findViewById(R.id.report_civic_issue);
+        trackComplain= homeView.findViewById(R.id.track_complaint);
+        my_complain= homeView.findViewById(R.id.my_complain);
+        help = homeView.findViewById(R.id.help_support);
         dotsLayout = homeView.findViewById(R.id.dotsLayout);
+
         //3 Images for slider
         List<Integer> images = Arrays.asList(
                 R.drawable.slide1,
@@ -202,6 +206,55 @@ public class HomeFragment extends Fragment {
                         .commit();
 
             }
+        });
+
+        //=========================Track Complain====================
+        trackComplain.setOnClickListener(v -> {
+            SessionManager session = new SessionManager(getContext());
+
+            if (!session.isLoggedIn()) {
+                showLoginDialog(); // popup
+
+            } else {
+                //Only open the report fragment if logged in
+                MyComplainFragment fragment = new MyComplainFragment();
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+
+            }
+
+        });
+        //====================my_complain==============================
+        my_complain.setOnClickListener(v -> {
+            SessionManager session = new SessionManager(getContext());
+
+            if (!session.isLoggedIn()) {
+                showLoginDialog(); // popup
+
+            } else {
+                //Only open the report fragment if logged in
+                TrackFragment fragment = new TrackFragment();
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+
+            }
+
+        });
+
+        //================Help===================================
+        help.setOnClickListener(v -> {
+            HelpFragment fragment = new HelpFragment();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return homeView;

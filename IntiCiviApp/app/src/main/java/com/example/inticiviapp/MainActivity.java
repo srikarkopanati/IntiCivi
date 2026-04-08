@@ -24,7 +24,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.inticiviapp.Authentication.SessionManager;
+import com.example.inticiviapp.Fragment.HelpFragment;
 import com.example.inticiviapp.Fragment.HomeFragment;
+import com.example.inticiviapp.Fragment.MyComplainFragment;
 import com.example.inticiviapp.Fragment.ReportFragment;
 import com.example.inticiviapp.Fragment.TrackFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -63,25 +65,35 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        Menu menu = navigationView.getMenu();
 
-        SessionManager session = new SessionManager(this);
-        //==================get name from logi  activity================
-        name = getIntent().getStringExtra("name");
-        email = getIntent().getStringExtra("email");
-        uid = getIntent().getStringExtra("uid");
-        Toast.makeText(this, "name:"+name+" email:"+email+" uid:"+uid, Toast.LENGTH_SHORT).show();
-        
         toolbar = findViewById(R.id.toolbar);
-        //Action bar
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(toolbar);
-        // Hamburger icon
+
+        // Drawer toggle
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar,
-                R.string.open, R.string.close);
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.open,
+                R.string.close
+        );
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+    // FORCE WHITE COLOR
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(android.R.color.white));
+
+
+
+        SessionManager session = new SessionManager(this);
+        //==================get name from logi  activity================
+//        name = getIntent().getStringExtra("name");
+//        email = getIntent().getStringExtra("email");
+//        uid = getIntent().getStringExtra("uid");
+//        Toast.makeText(this, "name:"+name+" email:"+email+" uid:"+uid, Toast.LENGTH_SHORT).show();
+
 
         // Default screen
         loadFragment(new HomeFragment());
@@ -94,11 +106,38 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_home) {
                 loadFragment(new HomeFragment());
             } else if (id == R.id.nav_report) {
-                loadFragment(new ReportFragment());
+                if (!session.isLoggedIn()) {
+                    Toast.makeText(this, "To register a complaint, please Login first", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, LoginActivity.class));
+
+                } else {
+                    loadFragment(new ReportFragment());
+
+                }
             } else if (id == R.id.nav_track) {
-                loadFragment(new TrackFragment());
+                if (!session.isLoggedIn()) {
+                    Toast.makeText(this, "To register a complaint, please Login first", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, LoginActivity.class));
+
+                } else {
+                    loadFragment(new TrackFragment());
+
+                }
+
             }else if (id == R.id.nav_Profile) {
                 showProfileBottomSheet();
+            } else if (id==R.id.nav_help) {
+                loadFragment(new HelpFragment());
+            }else if(id==R.id.nav_my){
+                if (!session.isLoggedIn()) {
+                    Toast.makeText(this, "To register a complaint, please Login first", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, LoginActivity.class));
+
+                } else {
+                    loadFragment(new MyComplainFragment());
+
+                }
+
             }
 
             drawerLayout.closeDrawers();
@@ -153,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
             phone.setText("Phone: " +"7562844814");
             aadhar.setText("Aaddhar: " + "876567876545" );
             address.setText("Address: " + "IIT Tirupati, India");
+            Toast.makeText(this,"UID"+user.getUid(),Toast.LENGTH_SHORT).show();
 
         }else{
             btnLogin.setVisibility(View.VISIBLE);

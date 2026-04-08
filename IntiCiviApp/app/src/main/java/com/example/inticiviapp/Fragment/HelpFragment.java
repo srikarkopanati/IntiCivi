@@ -1,66 +1,58 @@
 package com.example.inticiviapp.Fragment;
 
+
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.inticiviapp.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HelpFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HelpFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public HelpFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HelpFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HelpFragment newInstance(String param1, String param2) {
-        HelpFragment fragment = new HelpFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    View HelpView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_help, container, false);
+        HelpView= inflater.inflate(R.layout.fragment_help, container, false);
+        LinearLayout call = HelpView.findViewById(R.id.btn_call);
+        LinearLayout email = HelpView.findViewById(R.id.btn_email);
+
+//  CALL
+        call.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:+919502673836"));
+            startActivity(intent);
+        });
+
+// EMAIL
+        email.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:support@inticivi.gov.in"));
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Support Request");
+            startActivity(intent);
+        });
+        TextView q1 = HelpView.findViewById(R.id.q1);
+        TextView a1 = HelpView.findViewById(R.id.a1);
+
+        q1.setOnClickListener(v -> {
+            a1.setVisibility(a1.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+        });
+
+        TextView q2 = HelpView.findViewById(R.id.q2);
+        TextView a2 = HelpView.findViewById(R.id.a2);
+
+        q2.setOnClickListener(v -> {
+            a2.setVisibility(a2.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+        });
+
+        return HelpView;
     }
 }

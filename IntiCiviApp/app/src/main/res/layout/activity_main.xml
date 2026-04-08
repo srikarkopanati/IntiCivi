@@ -21,9 +21,11 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="#2F5BD3"
+            android:background="@color/blue"
             android:title="IntiCivi"
-            android:titleTextColor="#FFFFFF"/>
+            android:titleTextColor="@android:color/white"
+            app:titleCentered="false"
+            app:navigationIconTint="@android:color/white"/>
 
         <!-- Fragment Container -->
         <FrameLayout
