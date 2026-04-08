@@ -69,9 +69,14 @@ const styles = `
 
   /* ── Main layout ── */
   .main-layout {
-    max-width: 980px; margin: 0 auto; padding: 28px 32px 60px;
-    display: grid; grid-template-columns: 1fr 280px; gap: 24px;
-  }
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 32px 60px;
+  display: grid;
+
+  grid-template-columns: 680px 280px;  /* ✅ FIX */
+  gap: 24px;
+}
 
   /* ── Search card ── */
   .search-card {

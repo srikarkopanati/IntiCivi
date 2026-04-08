@@ -284,7 +284,7 @@ function Banner() {
             </Link>
 
             {/* Track Status */}
-            <button className="bn-card">
+            <Link to="/trackissue" className="bn-card" style={{ textDecoration: 'none' }}>
               <div className="bn-card-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"/>
@@ -293,10 +293,10 @@ function Banner() {
               </div>
               <p className="bn-card-label">Track Status</p>
               <p className="bn-card-sub">Check your complaint</p>
-            </button>
+            </Link>
 
             {/* Set Location — map style */}
-            <button className="bn-map-card">
+            <Link to="/registercomplaint" className="bn-map-card" style={{ textDecoration: 'none' }}>
               <div className="bn-map-pin">
                 <div className="bn-map-ping" />
                 <div className="bn-map-ping2" />
@@ -304,7 +304,7 @@ function Banner() {
               </div>
               <p className="bn-card-label">Set Location</p>
               <p className="bn-card-sub">Add area / pincode</p>
-            </button>
+            </Link>
 
           </div>
         </div>
