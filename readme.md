@@ -1,149 +1,173 @@
-IntiCivi — Civic Complaint Tracking System
-1. Project Description
-IntiCivi is a full-stack civic complaint submission and tracking system developed to reduce complaint processing time and improve transparency between citizens and administrators.
-Users can register, log in, submit complaints with details, and track complaint status.
-Admins can view all complaints and update their status.
-The system is built using React for frontend and Java Spring Boot for backend with JWT authentication.
+# IntiCivi — Civic Complaint Tracking System
 
-2. Features
-User registration and login
-JWT based authentication
-Submit complaint with details
-View complaint list
-Track complaint status
-Admin can view all complaints
-Admin can update complaint status
-REST API based backend
-Component-based frontend UI
+## 1. Overview
+IntiCivi is a full-stack civic complaint management system designed to streamline complaint submission, tracking, and resolution. It improves transparency and reduces processing time by enabling structured interaction between citizens and administrators.
 
-3. Tech Stack
-Frontend
-React + Vite
-CSS-in-JS / basic styling
+Users can:
+- Register and log in securely
+- Submit complaints with details
+- Track complaint status
 
-Backend
-Java 17
-Spring Boot
-Spring Security + JWT
+Admins can:
+- View all complaints
+- Update complaint status
 
-Database
-H2 (for demo / testing)
-PostgreSQL (for production)
-MongoDB / Firebase (optional)
-MinIO (for file / image storage)
+---
 
-Tools
-GitHub (version control)
-npm (frontend build)
+## 2. Features
 
-4. Repository Structure
+### User Features
+- User registration and login
+- JWT-based authentication
+- Submit complaints
+- View complaint history
+- Track complaint status
+
+### Admin Features
+- View all complaints
+- Update complaint status
+
+### System Features
+- REST API-based backend
+- Component-based frontend UI
+- Scalable architecture
+
+---
+
+## 3. Tech Stack
+
+### Frontend
+- React (Vite)
+- CSS / Basic Styling
+
+### Backend
+- Java 17
+- Spring Boot
+- Spring Security + JWT
+
+### Database
+- H2 (default for testing)
+- PostgreSQL (production)
+- Optional: MongoDB / Firebase
+
+### Storage
+- MinIO (file/image storage)
+
+### Tools
+- GitHub
+- npm / yarn
+
+---
+
+## 4. Project Structure
+
 project-root/
 │
-├── frontend_website/
-├── backend_website/
+├── frontend_website/     # React frontend
+├── backend_website/      # Spring Boot backend
 ├── README.md
 
+---
 
-5. Requirements
-Backend requirements
-Java 17+
-Maven 3.6+
+## 5. Requirements
 
-Frontend requirements
-Node.js 18+
-npm 10+ or yarn
+### Backend
+- Java 17+
+- Maven 3.6+
 
-Database (optional)
-PostgreSQL
+### Frontend
+- Node.js 18+
+- npm 10+ or yarn
 
-Files included
-backend → pom.xml
-frontend → package.json
-These files contain all dependencies.|
+### Optional
+- PostgreSQL
 
+---
 
-6. Steps to Run the Project
-Clone the repository
+## 6. Setup & Run
+
+### 6.1 Clone Repository
 git clone <repo_link>
 cd project-root
 
-6.1 Run Frontend
-    cd frontend_website
-    npm install
-    npm run dev
+---
 
-Open:
+### 6.2 Run Frontend
+cd frontend_website
+npm install
+npm run dev
+
+Frontend runs at:
 http://localhost:5173
-Check API URL in:
+
+Ensure API base URL in:
 src/api/authApi.js
-It should be:
+
+is:
 http://localhost:8080
 
+---
 
-6.2 Run Backend
-    cd backend_website
-    mvn clean install
-    mvn spring-boot:run
+### 6.3 Run Backend
+cd backend_website
+mvn clean install
+mvn spring-boot:run
 
 Backend runs at:
 http://localhost:8080
 
-H2 Console:
+---
+
+### H2 Console
 http://localhost:8080/h2-console
 
-JDBC URL:
-jdbc:h2:mem:testdb
+Credentials:
+JDBC URL: jdbc:h2:mem:testdb  
+Username: sa  
+Password: (empty)
 
-User:
-sa
-Password:
-(empty)
- 
-6.3 Android App
-    Open Project in Android Studio
-    Open Android Studio
-    Click "Open"
+---
 
-    Select the folder:
-    IntiCivi/InticiviApp
+### 6.4 Android App
 
-    ⁠Sync Gradle
-    Wait for Gradle to sync automatically
-    If not, click "Sync Project with Gradle Files"
+1. Open Android Studio  
+2. Select: IntiCivi/InticiviApp  
+3. Sync Gradle  
+4. Start Emulator or connect device  
+5. Click Run  
 
-    Setup Emulator or Device
-    Open Device Manager in Android Studio
-    Create or start an emulator
-    OR
-    Connect a real Android device via USB
-    Enable Developer Options → USB Debugging
+---
 
-    ⁠Run the Application
-    Click the Run button
-    Select your emulator or device
-    The app will install and launch automatically
+## 7. API Endpoints
 
-7. API Endpoints
+### Auth
+POST /api/auth/register  
+POST /api/auth/login  
+GET  /api/auth/me  
 
-Auth
-POST /api/auth/register
-POST /api/auth/login
-GET  /api/auth/me
+### Complaints
+POST /api/complaints  
+GET  /api/complaints  
+GET  /api/complaints/{id}  
 
-Complaints
-POST /api/complaints
-GET  /api/complaints
-GET  /api/complaints/{id}
+### Admin
+GET /api/complaints/admin/all  
+PUT /api/complaints/{id}/status  
 
-Admin
-GET /api/complaints/admin/all
-PUT /api/complaints/{id}/status
+### JWT Header
+Authorization: Bearer <TOKEN>
 
-JWT header
-Authorization: Bearer
+---
 
-Project runs using H2 database by default
-PostgreSQL can be configured in application.properties
-JWT authentication is enabled
-Repo should run without errors after clone
-Make sure backend runs before frontend
+## 8. Notes
+- Uses H2 database by default
+- PostgreSQL configurable in application.properties
+- Start backend before frontend
+- Dependencies:
+  - pom.xml (backend)
+  - package.json (frontend)
+
+---
+
+## 9. Summary
+IntiCivi is a scalable full-stack civic complaint tracking system built with React and Spring Boot, suitable for academic and real-world applications.
