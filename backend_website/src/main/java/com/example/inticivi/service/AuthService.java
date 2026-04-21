@@ -1,9 +1,11 @@
 package com.example.inticivi.service;
 
-import com.example.inticivi.model.User;
+import com.example.inticivi.dto.RegisterRequest;
+import com.example.inticivi.entity.Role;
+import com.example.inticivi.entity.User;
 import com.example.inticivi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,10 +19,18 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public User register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public User register(RegisterRequest request, Role role) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already in use");
+        }
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(role != null ? role : Role.USER);
         return userRepository.save(user);
     }
 
@@ -29,7 +39,7 @@ public class AuthService {
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             if (passwordEncoder.matches(password, user.getPassword())) {
-                return jwtService.generateToken(user.getEmail(), user.getRole());
+                return jwtService.generateToken(user.getEmail(), user.getRole().name());
             }
         }
         throw new RuntimeException("Invalid credentials");

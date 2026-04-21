@@ -1,41 +1,54 @@
 import { useState } from "react";
-import { login } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
+import { login } from "../api/authService";  // ← changed from utils/auth
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");        // ← changed from username to email
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-
-    // admin login
-    if (username === "admin" && password === "admin") {
-      login("admin");
-      navigate("/report");
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError("Please enter email and password");
       return;
     }
 
-    // user login (any user allowed for now)
-    if (username && password) {
-      login(username);
-      navigate("/report");
-      return;
-    }
+    setLoading(true);
+    setError("");
 
-    alert("Invalid login");
+    try {
+      const response = await login({ email, password });
+      const { token, role } = response.data;
+
+      // Save token to localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+
+      // Redirect based on role
+      if (role === "ADMIN") {
+        navigate("/report");
+      } else {
+        navigate("/report");
+      }
+
+    } catch (err) {
+      setError("Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div style={{ padding: 40 }}>
-
       <h2>Login</h2>
 
       <input
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Email"              
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
 
       <br /><br />
@@ -49,8 +62,10 @@ export default function Login() {
 
       <br /><br />
 
-      <button onClick={handleLogin}>
-        Login
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <button onClick={handleLogin} disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
       </button>
 
       <br /><br />
@@ -58,7 +73,6 @@ export default function Login() {
       <p>
         New user? <a href="/register">Register</a>
       </p>
-
     </div>
   );
 }

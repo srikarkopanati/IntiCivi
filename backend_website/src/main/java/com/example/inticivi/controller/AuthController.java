@@ -2,19 +2,21 @@ package com.example.inticivi.controller;
 
 import com.example.inticivi.dto.AuthResponse;
 import com.example.inticivi.dto.LoginRequest;
-import com.example.inticivi.model.User;
+import com.example.inticivi.dto.RegisterRequest;
+import com.example.inticivi.dto.UserDto;
+import com.example.inticivi.entity.Role;
+import com.example.inticivi.entity.User;
 import com.example.inticivi.service.AuthService;
 import com.example.inticivi.service.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173") // Assuming frontend runs on 5173
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
 
     @Autowired
@@ -24,23 +26,32 @@ public class AuthController {
     private JwtService jwtService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody User user) {
-        User savedUser = authService.register(user);
-        return ResponseEntity.ok(savedUser);
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+        Role role = Role.USER;
+        if (request.getRole() != null && request.getRole().equalsIgnoreCase("ADMIN")) {
+            role = Role.ADMIN;
+        }
+        User user = authService.register(request, role);
+        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
+        UserDto dto = new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole().name());
+        return ResponseEntity.ok(new AuthResponse(token, dto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         String token = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
-        Optional<User> user = authService.findByEmail(loginRequest.getEmail());
-        AuthResponse response = new AuthResponse(token, user.get());
-        return ResponseEntity.ok(response);
+        User user = authService.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+        UserDto dto = new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole().name());
+        return ResponseEntity.ok(new AuthResponse(token, dto));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<User> getCurrentUser(@RequestHeader("Authorization") String token) {
-        String email = jwtService.extractEmail(token.replace("Bearer ", ""));
-        Optional<User> user = authService.findByEmail(email);
-        return user.map(u -> ResponseEntity.ok(u)).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
+        String email = authentication.getName();
+        User user = authService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserDto dto = new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole().name());
+        return ResponseEntity.ok(dto);
     }
 }

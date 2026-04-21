@@ -1,19 +1,30 @@
 package com.example.inticivi.dto;
 
-import com.example.inticivi.model.User;
-
 public class AuthResponse {
     private String token;
-    private User user;
+    private UserDto user;
 
-    public AuthResponse(String token, User user) {
+    public AuthResponse() {
+    }
+
+    public AuthResponse(String token, UserDto user) {
         this.token = token;
         this.user = user;
     }
 
-    public String getToken() { return token; }
-    public void setToken(String token) { this.token = token; }
+    public String getToken() {
+        return token;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public UserDto getUser() {
+        return user;
+    }
+
+    public void setUser(UserDto user) {
+        this.user = user;
+    }
 }
