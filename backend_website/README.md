@@ -42,3 +42,21 @@ Uses H2 in-memory database. Access console at http://localhost:8080/h2-console
 ## CORS
 
 Configured to allow requests from http://localhost:5173 (Vite dev server)
+
+## ML Service (Civic Issue Detection)
+
+Run:
+cd ml_service  
+python -m uvicorn app:app --reload  
+
+Open:
+http://127.0.0.1:8000/docs  
+
+Use /predict endpoint:
+- text → description of issue  
+- file → optional  
+
+Output:
+- detected_issue  
+- department  
+- severity_level  
